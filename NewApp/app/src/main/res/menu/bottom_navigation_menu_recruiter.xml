@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_show_posts"
+        android:icon="@drawable/ic_home"
+        android:title="@string/job_postings" />
+
+    <item
+        android:id="@+id/menu_email_templates"
+        android:icon="@drawable/email"
+        android:title="@string/personal_profile" />
+
+    <item
+        android:id="@+id/menu_add_post_recruiter"
+        android:icon="@drawable/add_post"
+        android:title="@string/personal_profile" />
+
+    <item
+        android:id="@+id/menu_notifications_recruiter"
+        android:icon="@drawable/ic_notification"
+        android:title="@string/notification" />
+
+    <item
+        android:id="@+id/menu_recruiter_profile"
+        android:icon="@drawable/ic_personal_profile"
+        android:title="@string/personal_profile" />
+
+</menu>

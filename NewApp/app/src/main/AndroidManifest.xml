@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/new_app_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.NewApp"
+        tools:targetApi="31">
+        <activity
+            android:name=".HrProfileEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JobApplication"
+            android:exported="false" />
+        <activity
+            android:name=".PostJobActivity"
+            android:exported="true" />
+        <activity
+            android:name=".StudentAccountSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RecruiterFeed"
+            android:exported="true" />
+        <activity
+            android:name=".HRFeed"
+            android:exported="true" />
+        <activity
+            android:name=".StudFeed"
+            android:exported="true" />
+        <activity
+            android:name=".SignUpRecruiter"
+            android:exported="true" />
+        <activity
+            android:name=".SignUpHR"
+            android:exported="true" />
+        <activity
+            android:name=".SignUpStudent"
+            android:exported="true" />
+        <activity
+            android:name=".SignIn"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SignUp"
+            android:exported="true" />
+    </application>
+
+</manifest>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_approved_student_list"
+        android:icon="@drawable/student_list"
+        android:title="Approved List" />
+
+    <item
+        android:id="@+id/menu_pending_student_list"
+        android:icon="@drawable/pending_student_list"
+        android:title="Pending List" />
+
+    <item
+        android:id="@+id/menu_university_profile"
+        android:icon="@drawable/ic_personal_profile"
+        android:title="HR Profile" />
+
+</menu>

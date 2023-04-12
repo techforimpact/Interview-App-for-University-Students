@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "305820912942",
+    "project_id": "smart-intern-5c025",
+    "storage_bucket": "smart-intern-5c025.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305820912942:android:3abf0cade076df1061febf",
+        "android_client_info": {
+          "package_name": "com.example.newapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305820912942-fgil9njscjb6t30o1c587cnedgu9ik54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi9UqFf7fIZ9BCEXsw7MkCIWQpkECVqu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305820912942-fgil9njscjb6t30o1c587cnedgu9ik54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
