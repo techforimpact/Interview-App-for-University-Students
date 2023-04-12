@@ -16,7 +16,7 @@ import com.google.firebase.crashlytics.buildtools.reloc.javax.annotation.Nonnull
 
 class SkillsAdapter(private var mContext: Context,
                     private var mSkills: List<String>,
-                    private var isFragment: Boolean = false, private val onClickListener: (String) -> Unit) : RecyclerView.Adapter<SkillsAdapter.ViewHolder>()
+                    private var isFragment: Boolean = false) : RecyclerView.Adapter<SkillsAdapter.ViewHolder>()
 
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkillsAdapter.ViewHolder {
@@ -26,7 +26,6 @@ class SkillsAdapter(private var mContext: Context,
 
     override fun onBindViewHolder(holder: SkillsAdapter.ViewHolder, position: Int) {
 
-        holder.bind(mSkills[position], onClickListener)
         val skill = mSkills[position]
 
         holder.skillTextView.text = skill
@@ -41,14 +40,6 @@ class SkillsAdapter(private var mContext: Context,
     {
         val skillTextView: TextView = itemview.findViewById(R.id.student_skill_view)
 
-        fun bind(skill: String, onClickListener: (String) -> Unit) {
-            skillTextView.text = skill
-
-            // Set up OnClickListener for the skillTextView
-            skillTextView.setOnClickListener {
-                onClickListener(skill)
-            }
-        }
 
 
     }

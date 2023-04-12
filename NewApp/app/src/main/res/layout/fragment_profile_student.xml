@@ -170,26 +170,6 @@
                             android:layout_centerInParent="true"
                             android:padding="16dp"/>
 
-                        <Button
-                            android:id="@+id/edit_skills_btn"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:background="@drawable/edit_icon"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_centerVertical="true"/>
-
-                        <Button
-                            android:id="@+id/add_skill_button"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:background="@drawable/add_post"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginLeft="30dp"
-                            android:layout_alignParentLeft="true"
-                            />
-
 
 
                     </RelativeLayout>
@@ -199,15 +179,17 @@
                         android:layout_width="match_parent"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
-                        android:layout_height="wrap_content"/>
+                        android:background="@drawable/rounded_white_section"
+                        android:layout_height="200dp"/>
 
                     <Button
-                        android:id="@+id/see_all_skills_button"
+                        android:id="@+id/add_skill_button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/recruiter_view"
+                        android:textAllCaps="false"
                         android:layout_margin="30dp"
-                        android:text="See All"/>
+                        android:text="Add Skill"/>
 
                 </LinearLayout>
 

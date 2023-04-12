@@ -49,6 +49,7 @@ class ProfileStudentFragment : Fragment() {
     private var mSkills: MutableList<String>? = null
     private lateinit var editSkillsBtn: Button
     private lateinit var verificationIcon: ImageView
+    private  lateinit var newSkill: Button
 
     private lateinit var selectedSkill: String
 
@@ -82,7 +83,7 @@ class ProfileStudentFragment : Fragment() {
         Picasso.get().load(student!!.getImage()).placeholder(R.drawable.profile_picture).into(img)
 
 
-
+        newSkill = view.findViewById(R.id.add_skill_button)
 
         if(student?.getApproved() == "pending")
         {
@@ -115,9 +116,7 @@ class ProfileStudentFragment : Fragment() {
 
         mSkills = ArrayList()
 
-        skillsAdapter = SkillsAdapter(requireContext() , mSkills as ArrayList , true, onClickListener = { skill ->
-            selectedSkill = skill
-        })
+        skillsAdapter = SkillsAdapter(requireContext() , mSkills as ArrayList , true)
 
 
         skillsRecyclerView.adapter = skillsAdapter
@@ -127,26 +126,26 @@ class ProfileStudentFragment : Fragment() {
 
         editSkillsBtn = view.findViewById(R.id.edit_skills_btn)
 
-        // Set up the Edit button
-        editSkillsBtn.setOnClickListener {
-            // Create a dialog to edit the skill
+
+        newSkill.setOnClickListener{
+            // Create a dialog to add a new skill
             val dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.dialog_add_skill)
 
             // Set up the dialog layout
             val skillEditText = dialog.findViewById<EditText>(R.id.skill_edit_text)
-            skillEditText.setText(selectedSkill) // pre-fill the EditText with the current skill
-            val saveButton = dialog.findViewById<Button>(R.id.add_skill_button)
+            val addButton = dialog.findViewById<Button>(R.id.add_skill_button)
             val cancelButton = dialog.findViewById<Button>(R.id.cancel_button)
 
-            // Set up the Save button
-            saveButton.setOnClickListener {
-                // Get the new skill text and update it in the database
-                val newSkill = skillEditText.text.toString().trim()
-                if (newSkill.isNotEmpty()) {
+            dialog.show()
+            // Set up the Add button
+            addButton.setOnClickListener {
+                // Get the skill text and add it to the database
+                val skill = skillEditText.text.toString().trim()
+                if (skill.isNotEmpty()) {
                     val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                    val skillsRef = FirebaseDatabase.getInstance().getReference("Skills").child(uid).child(snapshot.key!!)
-                    skillsRef.setValue(newSkill)
+                    val skillsRef = FirebaseDatabase.getInstance().getReference("Skills").child(uid).push()
+                    skillsRef.setValue(skill)
                     dialog.dismiss()
                 } else {
                     skillEditText.error = "Please enter a skill"
@@ -157,42 +156,7 @@ class ProfileStudentFragment : Fragment() {
             cancelButton.setOnClickListener {
                 dialog.dismiss()
             }
-
-            // Show the dialog
-            dialog.show()
         }
-
-
-        // Create a dialog to add a new skill
-        val dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.dialog_add_skill)
-
-        // Set up the dialog layout
-        val skillEditText = dialog.findViewById<EditText>(R.id.skill_edit_text)
-        val addButton = dialog.findViewById<Button>(R.id.add_skill_button)
-        val cancelButton = dialog.findViewById<Button>(R.id.cancel_button)
-
-        // Set up the Add button
-        addButton.setOnClickListener {
-            // Get the skill text and add it to the database
-            val skill = skillEditText.text.toString().trim()
-            if (skill.isNotEmpty()) {
-                val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                val skillsRef = FirebaseDatabase.getInstance().getReference("Skills").child(uid).push()
-                skillsRef.setValue(skill)
-                dialog.dismiss()
-            } else {
-                skillEditText.error = "Please enter a skill"
-            }
-        }
-
-        // Set up the Cancel button
-        cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        // Show the dialog
-        dialog.show()
 
 
 
@@ -223,18 +187,18 @@ class ProfileStudentFragment : Fragment() {
 
 
     private fun retieveSKills() {
-        val jobsRef = FirebaseDatabase.getInstance().getReference().child("Skills")
+        val jobsRef = FirebaseDatabase.getInstance().getReference("Skills").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
 
         jobsRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 mSkills?.clear()
 
-                for (snap in snapshot.children) {
-                    // Check if job matches search query
-                    if (snap.key == FirebaseAuth.getInstance().uid) {
-                        val skill = snapshot.getValue(String::class.java)
-                        skill?.let { mSkills?.add(it) }
-                    }
+                for (skillSnapshot in snapshot.children) {
+                    val skillValue = skillSnapshot.getValue(String::class.java)
+                        if (skillValue != null) {
+                            mSkills?.add(skillValue)
+                        }
+
                 }
 
                 skillsAdapter?.notifyDataSetChanged()
