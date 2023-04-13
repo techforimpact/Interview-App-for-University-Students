@@ -36,14 +36,14 @@ class RecruiterJobAdapter(private var mContext: Context,
         holder.deadlineTextView.text = "Deadline : " + job.getDeadline()
         holder.detailsTextView.text = "Details : " + job.getDetails()
 
-        holder.applybtn.setOnClickListener(View.OnClickListener {
+        holder.seeApplications.setOnClickListener(View.OnClickListener {
             val pref = mContext.getSharedPreferences("PREFS" , Context.MODE_PRIVATE).edit()
             pref.putString("jobId" , job.getUid())
             pref.putString("uid" , FirebaseAuth.getInstance().uid)
             pref.apply()
 
             (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.recycler_view_home_recruiter , RecruiterApplicationsFragment()).commit()
+                .replace(R.id.recruiter_fragment_container , RecruiterApplicationsFragment()).commit()
         })
 
     }
@@ -61,7 +61,7 @@ class RecruiterJobAdapter(private var mContext: Context,
         var locationTextView: TextView = itemview.findViewById(R.id.recruiter_location)
         var deadlineTextView: TextView = itemview.findViewById(R.id.recruiter_deadline)
         var detailsTextView: TextView = itemview.findViewById(R.id.recruiter_details)
-        var applybtn: Button = itemview.findViewById(R.id.recruiter_see_applications)
+        var seeApplications: Button = itemview.findViewById(R.id.recruiter_see_applications)
     }
 
 }

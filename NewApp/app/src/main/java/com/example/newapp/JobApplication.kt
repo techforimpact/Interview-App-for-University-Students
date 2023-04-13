@@ -134,6 +134,8 @@ class JobApplication : AppCompatActivity() {
                 uploadFiles()
                 applyData(newApplicant)
                 Toast.makeText(this , "Your Application has been successfully submitted!" , Toast.LENGTH_SHORT).show()
+
+                this.finish()
             }
             else
             {
@@ -154,8 +156,8 @@ class JobApplication : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid.toString()
 
         val query = FirebaseDatabase.getInstance().getReference("Applicants")
-            .child(uid)
             .child(applicant.getJobUid())
+            .child(uid)
             .setValue(applicant)
 
     }

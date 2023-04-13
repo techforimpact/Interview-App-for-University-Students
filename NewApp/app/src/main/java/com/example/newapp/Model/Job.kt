@@ -11,11 +11,13 @@ class Job {
     private var location: String = ""
     private var deadline: String = ""
     private var details: String = ""
+    private var recruiterImage: String = ""
+    private var recruiterName: String = ""
     private var uid: String = ""
 
     constructor()
 
-    constructor(title: String, category: String, courses: String, seats: String, location: String, deadline: String, details: String, uid: String)
+    constructor(title: String, category: String, courses: String, seats: String, location: String, deadline: String, details: String,recruiterImage: String , recruiterName: String, uid: String )
     {
         this.title = title
         this.category = category
@@ -24,6 +26,8 @@ class Job {
         this.location = location
         this.deadline = deadline
         this.details = details
+        this.recruiterImage = recruiterImage
+        this.recruiterName = recruiterName
         this.uid = uid
     }
 
@@ -88,6 +92,25 @@ class Job {
     {
         this.details = details
     }
+
+    fun getRecruiterImage() : String{
+        return recruiterImage
+    }
+
+    fun setRecruiterImage(recruiterImage: String)
+    {
+        this.recruiterImage = recruiterImage
+    }
+
+    fun getRecruiterName() : String{
+        return recruiterName
+    }
+
+    fun setRecruiterName(recruiterName: String)
+    {
+        this.recruiterName = recruiterName
+    }
+
 
     fun getUid() : String{
         return uid

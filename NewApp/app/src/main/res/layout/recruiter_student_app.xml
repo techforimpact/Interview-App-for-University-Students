@@ -101,6 +101,21 @@
                 android:textColor="@color/white"
                 android:textSize="9sp" />
 
+
+            <Button
+                android:id="@+id/recruiter_student_app_cover_letter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_button"
+                android:padding="0dp"
+                android:layout_marginBottom="20dp"
+                android:text="View Cover Letter"
+                android:textAllCaps="false"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="9sp" />
+
+
         </LinearLayout>
 
 

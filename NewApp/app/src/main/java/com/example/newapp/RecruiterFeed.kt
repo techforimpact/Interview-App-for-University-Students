@@ -36,6 +36,11 @@ class RecruiterFeed : AppCompatActivity() {
             }
             R.id.menu_add_post_recruiter -> {
                 val intent = Intent(this, PostJobActivity::class.java)
+
+                val bundle = Bundle()
+                bundle.putParcelable("recruiter", student)
+                intent.putExtras(bundle)
+
                 startActivity(intent)
                 return@OnNavigationItemSelectedListener true
             }

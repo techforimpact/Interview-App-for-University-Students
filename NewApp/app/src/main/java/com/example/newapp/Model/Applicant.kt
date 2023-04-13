@@ -1,6 +1,9 @@
 package com.example.newapp.Model
 
-class Applicant
+import android.os.Parcel
+import android.os.Parcelable
+
+class Applicant: Parcelable
 {
 
     private var uid: String = ""
@@ -16,6 +19,38 @@ class Applicant
     private var resume: String = ""
     private var image: String = ""
     private var status: String = ""
+
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(uid)
+        parcel.writeString(studentUid)
+        parcel.writeString(jobUid)
+        parcel.writeString(name)
+        parcel.writeString(email)
+        parcel.writeString(contact)
+        parcel.writeString(university)
+        parcel.writeString(program)
+        parcel.writeString(degree)
+        parcel.writeString(coverLetter)
+        parcel.writeString(resume)
+        parcel.writeString(image)
+        parcel.writeString(status)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Student> {
+        override fun createFromParcel(parcel: Parcel): Student {
+            return Student(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Student?> {
+            return arrayOfNulls(size)
+        }
+    }
+
 
 
     constructor()

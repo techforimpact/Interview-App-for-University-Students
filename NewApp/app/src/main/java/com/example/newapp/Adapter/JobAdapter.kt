@@ -15,6 +15,9 @@ import com.example.newapp.Model.Job
 import com.example.newapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.buildtools.reloc.javax.annotation.Nonnull
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
+import org.w3c.dom.Text
 
 class JobAdapter (private var mContext: Context,
                     private var mJobs: List<Job>,
@@ -28,6 +31,8 @@ class JobAdapter (private var mContext: Context,
     override fun onBindViewHolder(holder: JobAdapter.ViewHolder, position: Int) {
         val job = mJobs[position]
 
+        holder.recruiterName.text = job.getRecruiterName()
+        Picasso.get().load(job!!.getRecruiterImage()).placeholder(R.drawable.profile_picture).into(holder.recruiterImage)
         holder.titleTextView.text = job.getTitle()
         holder.categoryTextView.text = "Category : " +job.getCategory()
         holder.coursesTextView.text = "Courses : " +job.getCourses()
@@ -52,6 +57,8 @@ class JobAdapter (private var mContext: Context,
 
     class ViewHolder (@Nonnull itemview: View) :RecyclerView.ViewHolder(itemview)
     {
+        var recruiterImage:CircleImageView = itemview.findViewById(R.id.student_job_recruiter_image)
+        var recruiterName: TextView = itemview.findViewById(R.id.student_job_recruiter_name)
         var titleTextView: TextView = itemview.findViewById(R.id.student_job_title)
         var categoryTextView: TextView = itemview.findViewById(R.id.student_job_category)
         var coursesTextView: TextView = itemview.findViewById(R.id.student_courses_required)

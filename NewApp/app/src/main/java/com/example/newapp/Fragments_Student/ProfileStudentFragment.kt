@@ -44,10 +44,10 @@ class ProfileStudentFragment : Fragment() {
     private var profileName: TextView? = null
     private var profileUniversity: TextView? = null
     private lateinit var skillsRecyclerView: RecyclerView
-    private lateinit var seeAllButton: Button
+
     private var skillsAdapter: SkillsAdapter? = null
     private var mSkills: MutableList<String>? = null
-    private lateinit var editSkillsBtn: Button
+
     private lateinit var verificationIcon: ImageView
     private  lateinit var newSkill: Button
     private lateinit var newCertificate: Button
@@ -226,9 +226,10 @@ class ProfileStudentFragment : Fragment() {
 
                 for (skillSnapshot in snapshot.children) {
                     val skillValue = skillSnapshot.getValue(String::class.java)
-                        if (skillValue != null) {
-                            mSkills?.add(skillValue)
-                        }
+
+                    if (skillValue != null) {
+                        mSkills?.add(skillValue)
+                    }
 
                 }
 

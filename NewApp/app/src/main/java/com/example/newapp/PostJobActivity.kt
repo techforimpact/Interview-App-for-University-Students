@@ -6,10 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.newapp.Model.Recruiter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -24,13 +27,21 @@ class PostJobActivity : AppCompatActivity() {
     private lateinit var details: EditText
     private lateinit var postbtn: TextView
 
+    private var recruiter: Recruiter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_job)
 
         supportActionBar?.hide()
 
+        val bundle = intent.extras
+        recruiter = bundle!!.getParcelable<Recruiter>("recruiter")
+
+
         postbtn = findViewById(R.id.add_post_post_btn)
+        val closeBtn = findViewById<ImageView>(R.id.add_post_close_btn)
+
 
         postbtn.setOnClickListener{
             val title = findViewById<EditText>(R.id.add_post_title).text.toString()
@@ -43,7 +54,7 @@ class PostJobActivity : AppCompatActivity() {
 
             if(title.isNotEmpty() && courses.isNotEmpty() && category.isNotEmpty() && deadline.isNotEmpty() && seats.isNotEmpty() && details.isNotEmpty() && location.isNotEmpty())
             {
-                var job = Job(title , category , courses , seats , location , deadline , details)
+                var job = Job(recruiter!!.getImage() , recruiter!!.getName() ,title , category , courses , seats , location , deadline , details)
 
                 val ProgressDial = ProgressDialog(this@PostJobActivity)
 
@@ -63,6 +74,10 @@ class PostJobActivity : AppCompatActivity() {
             myCalendar.set(Calendar.MONTH, monthOfYear)
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             updateLabel()
+        }
+
+        closeBtn.setOnClickListener{
+            this.finish()
         }
 
         editText.setOnClickListener {
@@ -96,7 +111,7 @@ class PostJobActivity : AppCompatActivity() {
         editText.setText(sdf.format(myCalendar.time))
     }
 
-    data class Job(val title: String = "" , val category: String = "" , val courses: String = "" , val seats: String = "" , val location: String = "" , val deadline: String = "" , val details: String = "")
+    data class Job(val recruiterImage: String = "" , val recruiterName: String = "", val title: String = "" , val category: String = "" , val courses: String = "" , val seats: String = "" , val location: String = "" , val deadline: String = "" , val details: String = "")
 
 
     private fun saveJobData(job: Job, progress: ProgressDialog) {
@@ -107,6 +122,8 @@ class PostJobActivity : AppCompatActivity() {
         val usermap = HashMap<String , Any>()
 
         usermap["uid"] = currentUserID
+        usermap["recruiterImage"] = job.recruiterImage
+        usermap["recruiterName"] = job.recruiterName
         usermap["title"] = job.title.lowercase()
         usermap["category"] = job.category
         usermap["courses"] = job.courses

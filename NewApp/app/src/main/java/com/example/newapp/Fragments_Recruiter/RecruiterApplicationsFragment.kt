@@ -8,9 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newapp.Adapter.ApplicantAdapter
 import com.example.newapp.Adapter.RecruiterJobAdapter
+import com.example.newapp.Model.Applicant
 import com.example.newapp.Model.Student
 import com.example.newapp.R
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,8 +34,8 @@ class RecruiterApplicationsFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var jobAdapter: RecruiterJobAdapter
-    private lateinit var mStudents: MutableList<Student>
+    private lateinit var applicantAdapter: ApplicantAdapter
+    private lateinit var mApplicants: MutableList<Applicant>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,27 +56,55 @@ class RecruiterApplicationsFragment : Fragment() {
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = LinearLayoutManager(context)
 
+        mApplicants = ArrayList()
+
+        applicantAdapter = ApplicantAdapter(requireContext() , mApplicants as ArrayList , true)
+        recyclerView.adapter = applicantAdapter
+
         val pref = context?.getSharedPreferences("PREFS" , Context.MODE_PRIVATE)
 
-        /*val jobUid = pref.getString("jobid")
-        val uid = pref.getString("uid")*/
-/*
+        val jobUid = pref?.getString("jobid", "")
+        val uid = pref?.getString("uid", "")
 
 
-        val uid = intent.getStringExtra("uid").toString()
-        val jobID = intent.getStringExtra("jobUid").toString()
-
-
-        recyclerView = view.findViewById(R.id.recycler_view_student_applications)
-
-
-*/
-
-
+        retrieveApplicants(uid.toString() , jobUid.toString())
 
 
         return view
     }
+
+
+    private fun retrieveApplicants(uid: String , jobuid: String)
+    {
+        val query = FirebaseDatabase.getInstance().getReference("Applicants")
+            .child(jobuid)
+            .orderByChild("uid")
+            .equalTo(uid)
+
+        query.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                mApplicants?.clear()
+
+                for (snap in snapshot.children) {
+                    val applicant = snap.getValue(Applicant::class.java)
+
+                    // Check if student matches search query
+                    if (applicant != null ) {
+                        mApplicants?.add(applicant)
+                    }
+                }
+
+                applicantAdapter?.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+            }
+        })
+    }
+
+
+
 
     companion object {
         /**
