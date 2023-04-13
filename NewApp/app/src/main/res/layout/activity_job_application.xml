@@ -63,7 +63,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/job_app_title"
+                android:id="@+id/student_apply_job_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
@@ -82,12 +82,14 @@
 
 
             <EditText
+                android:id="@+id/student_apply_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:hint="Name of the Applicant" />
 
             <EditText
+                android:id="@+id/student_apply_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -95,6 +97,7 @@
 
 
             <EditText
+                android:id="@+id/student_apply_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -102,12 +105,14 @@
 
 
             <EditText
+                android:id="@+id/student_apply_resume"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:hint="Resume of the Applicant" />
 
             <EditText
+                android:id="@+id/student_apply_cover_letter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

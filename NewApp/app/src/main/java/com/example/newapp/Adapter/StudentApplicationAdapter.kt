@@ -15,10 +15,7 @@ import com.example.newapp.Fragments_Student.ProfileStudentFragment
 import com.example.newapp.Model.Student
 import com.example.newapp.R
 import com.google.firebase.crashlytics.buildtools.reloc.javax.annotation.Nonnull
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -36,7 +33,7 @@ class StudentApplicationAdapter (private var mContext: Context,
         val student = mStudents[position]
 
         holder.studentName.text = student.getFullname()
-        holder.studentRollno.text = "Roll No : " +  student.getRollno()
+        holder.studentUniversity.text = "University : " +  student.getUniversity()
         Picasso.get().load(student.getImage()).placeholder(R.drawable.profile_picture).into(holder.pictureStudent)
 
 
@@ -57,21 +54,34 @@ class StudentApplicationAdapter (private var mContext: Context,
 
         holder.rejectBtn.setOnClickListener{
 
-            val query = FirebaseDatabase.getInstance().getReference("Profiles")
+/*            val query = FirebaseDatabase.getInstance().getReference("Applicant")
                 .orderByChild("uid")
                 .equalTo(student.getUId())
-
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (profileSnapshot in dataSnapshot.children) {
-                        profileSnapshot.ref.child("approved").setValue("rejected")
+                .addChildEventListener(object : ChildEventListener {
+                    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                        val applicant = snapshot.getValue(Student::class.java)
+                        if (applicant != null && applicant.status == "pending" && applicant.jobuid == job.getUId()) {
+                            // Perform your desired action on the matching child here
+                            snapshot.ref.child("approved").setValue("rejected")
+                        }
                     }
-                }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.e(ContentValues.TAG, "onCancelled", databaseError.toException())
-                }
-            })
+                    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                        // Handle changes to matching children if needed
+                    }
+
+                    override fun onChildRemoved(snapshot: DataSnapshot) {
+                        // Handle removal of matching children if needed
+                    }
+
+                    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                        // Handle changes in ordering of children if needed
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.e(ContentValues.TAG, "onCancelled", databaseError.toException())
+                    }
+                })*/
 
 
         }
@@ -107,12 +117,13 @@ class StudentApplicationAdapter (private var mContext: Context,
 
     class ViewHolder (@Nonnull itemview: View) : RecyclerView.ViewHolder(itemview)
     {
-        var pictureStudent: CircleImageView = itemview.findViewById(R.id.hr_student_app_dp)
-        var studentName: TextView = itemview.findViewById(R.id.hr_student_app_name)
-        var studentRollno: TextView = itemview.findViewById(R.id.hr_student_app_rollno)
-        var viewProfile: TextView = itemview.findViewById(R.id.hr_student_app_profile_btn)
-        var rejectBtn: Button = itemview.findViewById(R.id.hr_student_app_reject_btn)
-        var acceptBtn: Button = itemview.findViewById(R.id.hr_student_app_approve_btn)
+        var pictureStudent: CircleImageView = itemview.findViewById(R.id.recruiter_student_app_dp)
+        var studentName: TextView = itemview.findViewById(R.id.recruiter_student_app_name)
+        var studentUniversity: TextView = itemview.findViewById(R.id.recruiter_student_app_university)
+        var viewProfile: Button = itemview.findViewById(R.id.recruiter_student_app_profile_btn)
+        var viewResume: Button = itemview.findViewById(R.id.recruiter_student_app_resume)
+        var rejectBtn: Button = itemview.findViewById(R.id.recruiter_student_app_approve_btn)
+        var acceptBtn: Button = itemview.findViewById(R.id.recruiter_student_app_reject_btn)
     }
 
 

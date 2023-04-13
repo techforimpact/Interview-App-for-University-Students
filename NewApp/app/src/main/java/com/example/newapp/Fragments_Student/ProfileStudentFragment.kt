@@ -50,6 +50,7 @@ class ProfileStudentFragment : Fragment() {
     private lateinit var editSkillsBtn: Button
     private lateinit var verificationIcon: ImageView
     private  lateinit var newSkill: Button
+    private lateinit var newCertificate: Button
 
     private lateinit var selectedSkill: String
 
@@ -84,6 +85,7 @@ class ProfileStudentFragment : Fragment() {
 
 
         newSkill = view.findViewById(R.id.add_skill_button)
+        newCertificate = view.findViewById(R.id.new_certificates_button)
 
         if(student?.getApproved() == "pending")
         {
@@ -112,7 +114,6 @@ class ProfileStudentFragment : Fragment() {
         skillsRecyclerView = view.findViewById(R.id.skills_recycler_view)
         skillsRecyclerView.setHasFixedSize(false)
         skillsRecyclerView.layoutManager = LinearLayoutManager(context)
-        seeAllButton = view.findViewById(R.id.see_all_skills_button)
 
         mSkills = ArrayList()
 
@@ -124,9 +125,6 @@ class ProfileStudentFragment : Fragment() {
         retieveSKills()
 
 
-        editSkillsBtn = view.findViewById(R.id.edit_skills_btn)
-
-
         newSkill.setOnClickListener{
             // Create a dialog to add a new skill
             val dialog = Dialog(requireContext())
@@ -136,6 +134,39 @@ class ProfileStudentFragment : Fragment() {
             val skillEditText = dialog.findViewById<EditText>(R.id.skill_edit_text)
             val addButton = dialog.findViewById<Button>(R.id.add_skill_button)
             val cancelButton = dialog.findViewById<Button>(R.id.cancel_button)
+
+            dialog.show()
+            // Set up the Add button
+            addButton.setOnClickListener {
+                // Get the skill text and add it to the database
+                val skill = skillEditText.text.toString().trim()
+                if (skill.isNotEmpty()) {
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                    val skillsRef = FirebaseDatabase.getInstance().getReference("Skills").child(uid).push()
+                    skillsRef.setValue(skill)
+                    dialog.dismiss()
+                } else {
+                    skillEditText.error = "Please enter a skill"
+                }
+            }
+
+            // Set up the Cancel button
+            cancelButton.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+
+        newCertificate.setOnClickListener{
+            // Create a dialog to add a new skill
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.dialog_add_skill)
+
+            // Set up the dialog layout
+            val skillEditText = dialog.findViewById<EditText>(R.id.skill_edit_text)
+            val addButton = dialog.findViewById<Button>(R.id.add_skill_button)
+            val cancelButton = dialog.findViewById<Button>(R.id.cancel_button)
+
+            addButton.text = "Add Certificate"
 
             dialog.show()
             // Set up the Add button
