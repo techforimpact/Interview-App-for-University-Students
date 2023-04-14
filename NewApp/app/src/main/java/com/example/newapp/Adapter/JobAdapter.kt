@@ -32,7 +32,7 @@ class JobAdapter (private var mContext: Context,
         val job = mJobs[position]
 
         holder.recruiterName.text = job.getRecruiterName()
-        Picasso.get().load(job!!.getRecruiterImage()).placeholder(R.drawable.profile_picture).into(holder.recruiterImage)
+        Picasso.get().load(job.getRecruiterImage()).placeholder(R.drawable.profile_picture).into(holder.recruiterImage)
         holder.titleTextView.text = job.getTitle()
         holder.categoryTextView.text = "Category : " +job.getCategory()
         holder.coursesTextView.text = "Courses : " +job.getCourses()

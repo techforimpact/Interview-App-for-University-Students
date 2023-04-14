@@ -11,10 +11,6 @@
         android:icon="@drawable/ic_search"
         android:title="Seach Companies"/>
 
-    <item
-        android:id="@+id/menu_notifications"
-        android:icon="@drawable/ic_notification"
-        android:title="@string/notification" />
 
     <item
         android:id="@+id/menu_personal_profile"

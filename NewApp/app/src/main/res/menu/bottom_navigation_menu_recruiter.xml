@@ -6,20 +6,12 @@
         android:icon="@drawable/ic_home"
         android:title="@string/job_postings" />
 
-    <item
-        android:id="@+id/menu_email_templates"
-        android:icon="@drawable/email"
-        android:title="@string/personal_profile" />
 
     <item
         android:id="@+id/menu_add_post_recruiter"
         android:icon="@drawable/add_post"
         android:title="@string/personal_profile" />
 
-    <item
-        android:id="@+id/menu_notifications_recruiter"
-        android:icon="@drawable/ic_notification"
-        android:title="@string/notification" />
 
     <item
         android:id="@+id/menu_recruiter_profile"

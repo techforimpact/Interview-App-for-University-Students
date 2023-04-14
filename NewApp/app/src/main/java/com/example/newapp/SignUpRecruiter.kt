@@ -85,7 +85,7 @@ class SignUpRecruiter : AppCompatActivity() {
         usermap["location"] = student.companyLocation
         usermap["contact"] = student.companyContact
         usermap["email"] = student.mail
-        usermap["image"] = "https://firebasestorage.googleapis.com/v0/b/smart-intern-5c025.appspot.com/o/Default%20Images%2Fprofile_picture.png?alt=media&token=75c41c40-5c8c-4ac8-862b-5040c7aa2464"
+        usermap["image"] = "https://firebasestorage.googleapis.com/v0/b/smartintern-73a11.appspot.com/o/Default%20Images%2Fprofile_picture.png?alt=media&token=5c5ca692-200f-452e-aa35-786ccbaabd64"
         usermap["role"] = "recruiter"
 
 

@@ -65,6 +65,7 @@
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/add_post_recruiter_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/profile_picture"

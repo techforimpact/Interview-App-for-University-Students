@@ -1,18 +1,12 @@
 package com.example.newapp
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.newapp.Fragments_Recruiter.*
-import com.example.newapp.Fragments_Student.HomeStudentFragment
-import com.example.newapp.Fragments_Student.NotificationStudentFragment
-import com.example.newapp.Fragments_Student.ProfileStudentFragment
-import com.example.newapp.Fragments_Student.SearchStudentFragment
 import com.example.newapp.Model.Recruiter
-import com.example.newapp.Model.Student
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,24 +24,13 @@ class RecruiterFeed : AppCompatActivity() {
                 moveToFragement(HomeRecruiterFragment(), student)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.menu_email_templates -> {
-                moveToFragement(RecruiterEmailFragment(), student)
-                return@OnNavigationItemSelectedListener true
-            }
+
             R.id.menu_add_post_recruiter -> {
                 val intent = Intent(this, PostJobActivity::class.java)
-
-                val bundle = Bundle()
-                bundle.putParcelable("recruiter", student)
-                intent.putExtras(bundle)
-
                 startActivity(intent)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.menu_notifications_recruiter -> {
-                moveToFragement(RecruiterNotificationsFragment(), student)
-                return@OnNavigationItemSelectedListener true
-            }
+
             R.id.menu_recruiter_profile -> {
                 moveToFragement(RecruiterProfileFragment(), student)
                 return@OnNavigationItemSelectedListener true

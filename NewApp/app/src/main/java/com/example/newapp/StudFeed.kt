@@ -1,22 +1,14 @@
 package com.example.newapp
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.*
-import android.graphics.ColorSpace.Model
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.example.newapp.Fragments_Student.HomeStudentFragment
-import com.example.newapp.Fragments_Student.NotificationStudentFragment
 import com.example.newapp.Fragments_Student.ProfileStudentFragment
 import com.example.newapp.Fragments_Student.SearchStudentFragment
 import com.example.newapp.Model.Student
-import com.example.newapp.Model.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -39,10 +31,6 @@ class StudFeed : AppCompatActivity() {
             }
             R.id.menu_personal_profile -> {
                 moveToFragment(ProfileStudentFragment() , student)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.menu_notifications -> {
-                moveToFragment(NotificationStudentFragment() , student)
                 return@OnNavigationItemSelectedListener true
             }
         }

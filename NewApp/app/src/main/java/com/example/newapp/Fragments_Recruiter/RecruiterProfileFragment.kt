@@ -91,8 +91,11 @@ class RecruiterProfileFragment : Fragment() {
 
         if (profileId == firebaseUser.uid)
         {
-
+            editBtn.visibility = View.GONE
         }
+
+
+
 
 
 

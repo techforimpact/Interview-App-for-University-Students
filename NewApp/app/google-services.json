@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "305820912942",
-    "project_id": "smart-intern-5c025",
-    "storage_bucket": "smart-intern-5c025.appspot.com"
+    "project_number": "1016678218814",
+    "project_id": "smartintern-73a11",
+    "storage_bucket": "smartintern-73a11.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:305820912942:android:3abf0cade076df1061febf",
+        "mobilesdk_app_id": "1:1016678218814:android:ea9296f4135751ee8ee56f",
         "android_client_info": {
           "package_name": "com.example.newapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "305820912942-fgil9njscjb6t30o1c587cnedgu9ik54.apps.googleusercontent.com",
+          "client_id": "1016678218814-k3rb3dt9fsvrsll84e01am1muli1c3np.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAi9UqFf7fIZ9BCEXsw7MkCIWQpkECVqu4"
+          "current_key": "AIzaSyAePlwkLnALTOUlUIG-wzrOYMRsW466bEc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "305820912942-fgil9njscjb6t30o1c587cnedgu9ik54.apps.googleusercontent.com",
+              "client_id": "1016678218814-k3rb3dt9fsvrsll84e01am1muli1c3np.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

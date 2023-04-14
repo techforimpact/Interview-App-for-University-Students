@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
@@ -14,8 +15,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newapp.Model.Recruiter
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,6 +28,7 @@ class PostJobActivity : AppCompatActivity() {
     private lateinit var editText: EditText
     private lateinit var details: EditText
     private lateinit var postbtn: TextView
+    private lateinit var recruiterImage: CircleImageView
 
     private var recruiter: Recruiter? = null
 
@@ -35,13 +38,29 @@ class PostJobActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        val bundle = intent.extras
-        recruiter = bundle!!.getParcelable<Recruiter>("recruiter")
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val profileRef = FirebaseDatabase.getInstance().getReference("Profiles").child(currentUser!!.uid)
 
+        profileRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val recru = snapshot.getValue(Recruiter::class.java)
+                    recruiter = recru
+                } else {
+                    // Profile data not found
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+            }
+        })
 
         postbtn = findViewById(R.id.add_post_post_btn)
         val closeBtn = findViewById<ImageView>(R.id.add_post_close_btn)
 
+        recruiterImage = findViewById(R.id.add_post_recruiter_image)
+        Picasso.get().load(recruiter?.getImage()).placeholder(R.drawable.profile_picture).into(recruiterImage)
 
         postbtn.setOnClickListener{
             val title = findViewById<EditText>(R.id.add_post_title).text.toString()
@@ -117,7 +136,9 @@ class PostJobActivity : AppCompatActivity() {
     private fun saveJobData(job: Job, progress: ProgressDialog) {
         // Generate a unique key for each student to store in the database
         val currentUserID = FirebaseAuth.getInstance().currentUser!!.uid
-        val studentRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child("Jobs")
+        val jobsRef = FirebaseDatabase.getInstance().getReference("Jobs")
+
+        val newJobRef = jobsRef.push()
 
         val usermap = HashMap<String , Any>()
 
@@ -134,7 +155,7 @@ class PostJobActivity : AppCompatActivity() {
         usermap["status"] = "active"
 
 
-        studentRef.child(currentUserID).setValue(usermap)
+        newJobRef.setValue(usermap)
             .addOnCompleteListener{task ->
                 if (task.isSuccessful){
                     progress.dismiss()
