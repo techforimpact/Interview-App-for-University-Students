@@ -46,14 +46,14 @@ class RecruiterAdapter (private var mContext: Context,
         checkFollowingStatus(recruiter.getUId() , holder.recruiter_search_follow)
 
 
-        holder.itemView.setOnClickListener(View.OnClickListener {
-            val pref = mContext.getSharedPreferences("PREFS" , Context.MODE_PRIVATE).edit()
+/*        holder.itemView.setOnClickListener(View.OnClickListener {
+            val pref = mContext.getSharedPreferences("RECPROF" , Context.MODE_PRIVATE).edit()
             pref.putString("profileId" , recruiter.getUId())
             pref.apply()
 
             (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.student_fragment_container , RecruiterProfileFragment()).commit()
-        })
+        })*/
 
 
         holder.recruiter_search_follow.setOnClickListener{

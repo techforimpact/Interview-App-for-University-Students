@@ -162,6 +162,65 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="Certificates"
+                            android:textColor="@color/white"
+                            android:textAlignment="center"
+                            android:textStyle="bold"
+                            android:textSize="25sp"
+                            android:layout_centerInParent="true"
+                            android:padding="16dp"/>
+
+
+
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/certificates_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:background="@drawable/rounded_white_section"
+                        android:layout_height="200dp"/>
+
+                    <Button
+                        android:id="@+id/new_certificates_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/recruiter_view"
+                        android:layout_margin="30dp"
+                        android:textAllCaps="false"
+                        android:text="Add Certificate"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+
+
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/rounded_button">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:text="Skills"
                             android:textColor="@color/white"
                             android:textAlignment="center"
@@ -194,64 +253,6 @@
                 </LinearLayout>
 
             </RelativeLayout>
-
-
-
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_margin="20dp"
-                    android:background="@drawable/rounded_button">
-
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Certificates"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:textStyle="bold"
-                            android:textSize="25sp"
-                            android:layout_centerInParent="true"
-                            android:padding="16dp"/>
-
-
-
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/certificates_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_height="wrap_content"/>
-
-                    <Button
-                        android:id="@+id/new_certificates_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/recruiter_view"
-                        android:layout_margin="30dp"
-                        android:textAllCaps="false"
-                        android:text="Add Certificate"/>
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-
 
 
 

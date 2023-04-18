@@ -3,6 +3,7 @@ package com.example.newapp.Adapter
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,11 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newapp.Fragments_Recruiter.RecruiterApplicationsFragment
+import com.example.newapp.Fragments_Recruiter.RecrutierApplicantProfileFragment
 import com.example.newapp.Fragments_Student.ProfileStudentFragment
 import com.example.newapp.Model.Applicant
+import com.example.newapp.Model.Notification
 import com.example.newapp.Model.Student
 import com.example.newapp.R
 import com.google.firebase.crashlytics.buildtools.reloc.javax.annotation.Nonnull
@@ -47,25 +53,28 @@ class ApplicantAdapter(private var mContext: Context,
 
 
         holder.viewProfile.setOnClickListener{
-            val pref = mContext.getSharedPreferences("PREFS" , Context.MODE_PRIVATE).edit()
-            pref.putString("profileId" , applicant.getStudentUid())
-            pref.apply()
 
-            val bundle = Bundle()
-            bundle.putParcelable("applicant", applicant)
-            ProfileStudentFragment().arguments = bundle
+            val bundle = Bundle().apply {
+                putString("jobUid", applicant.getJobUid())
+                putString("studentUid", applicant.getStudentUid())
+            }
 
+            val fragment = RecrutierApplicantProfileFragment().apply {
+                arguments = bundle
+            }
 
             (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.recruiter_fragment_container , ProfileStudentFragment() ).commit()
+                .replace(R.id.recruiter_fragment_container, fragment)
+                .commit()
         }
 
 
         holder.reject.setOnClickListener{
 
             val query = FirebaseDatabase.getInstance().getReference("Applicants")
-                .orderByChild("uid")
-                .equalTo(applicant.getUId())
+                .child(applicant.getJobUid())
+                .orderByChild("studentUid")
+                .equalTo(applicant.getStudentUid())
 
             query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -79,6 +88,26 @@ class ApplicantAdapter(private var mContext: Context,
                 }
             })
 
+            val notificationref = FirebaseDatabase.getInstance().getReference("Notifications")
+            val notiref = FirebaseDatabase.getInstance().getReference("Notifications")
+                .orderByChild("studentUid").equalTo(applicant.getStudentUid())
+
+            notiref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (notificationSnap in snapshot.children) {
+                        val notification = notificationSnap.getValue(Notification::class.java)
+                        if (notification?.getJobUid() == applicant.getJobUid()) {
+                            notification.setStatus("rejected")
+                            notificationref.child(notificationSnap.key ?: "").setValue(notification)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+
 
         }
 
@@ -86,8 +115,9 @@ class ApplicantAdapter(private var mContext: Context,
         holder.accept.setOnClickListener{
 
             val query = FirebaseDatabase.getInstance().getReference("Applicants")
-                .orderByChild("uid")
-                .equalTo(applicant.getUId())
+                .child(applicant.getJobUid())
+                .orderByChild("studentUid")
+                .equalTo(applicant.getStudentUid())
 
             query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -101,11 +131,32 @@ class ApplicantAdapter(private var mContext: Context,
                 }
             })
 
+            val notificationref = FirebaseDatabase.getInstance().getReference("Notifications")
+            val notiref = FirebaseDatabase.getInstance().getReference("Notifications")
+                .orderByChild("studentUid").equalTo(applicant.getStudentUid())
+
+            notiref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (notificationSnap in snapshot.children) {
+                        val notification = notificationSnap.getValue(Notification::class.java)
+                        if (notification?.getJobUid() == applicant.getJobUid()) {
+                            notification.setStatus("accepted")
+                            notificationref.child(notificationSnap.key ?: "").setValue(notification)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+
+
+
         }
 
         holder.resume.setOnClickListener{
             val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(applicant.getResume())
-
             val localFile = File.createTempFile("temp", "pdf")
             storageRef.getFile(localFile).addOnSuccessListener {
                 // File has been downloaded to local file
@@ -113,16 +164,32 @@ class ApplicantAdapter(private var mContext: Context,
                 // For example, you can read the file as a byte array:
                 val fileData = localFile.readBytes()
 
+                // Create a content:// Uri for the file
+                val fileProviderUri = FileProvider.getUriForFile(holder.itemView.context, "com.example.newapp.fileprovider", localFile)
+
                 val intent = Intent(Intent.ACTION_VIEW)
-                val fileUri = Uri.fromFile(localFile)
-                intent.setDataAndType(fileUri, "application/pdf") // Replace "application/pdf" with the MIME type of the file
+                intent.setDataAndType(fileProviderUri, "application/pdf") // Replace "application/pdf" with the MIME type of the file
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                holder.itemView.context.startActivity(intent) // use the context of the item view
+
+                // Add read permission for the Uri to the Intent
+                val resInfoList = holder.itemView.context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                for (resolveInfo in resInfoList) {
+                    val packageName = resolveInfo.activityInfo.packageName
+                    holder.itemView.context.grantUriPermission(packageName, fileProviderUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+
+                // Start the activity with the Intent
+                if (intent.resolveActivity(holder.itemView.context.packageManager) != null) {
+                    holder.itemView.context.startActivity(intent)
+                } else {
+                    Toast.makeText(holder.itemView.context, "No app available to handle the file", Toast.LENGTH_SHORT).show()
+                }
 
             }.addOnFailureListener {
                 // Handle any errors that occur during file download
             }
         }
+
 
         holder.coverLetter.setOnClickListener{
             val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(applicant.getCoverLetter())
@@ -132,11 +199,24 @@ class ApplicantAdapter(private var mContext: Context,
                 // File has been downloaded to local file
                 // Read the file from local file using any method you prefer
                 val intent = Intent(Intent.ACTION_VIEW)
-                val fileUri = Uri.fromFile(localFile)
-                intent.setDataAndType(fileUri, "application/pdf") // Replace "application/pdf" with the MIME type of the file
+                val fileProviderUri = FileProvider.getUriForFile(holder.itemView.context, "com.example.newapp.fileprovider", localFile)
+                intent.setDataAndType(fileProviderUri, "application/pdf") // Replace "application/pdf" with the MIME type of the file
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                holder.itemView.context.startActivity(intent) // use the context of the item view
 
+                // Check if there is an app available to open the document
+                val resInfoList = holder.itemView.context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                if (resInfoList.isNotEmpty()) {
+                    // Add read permission for the Uri to the Intent
+                    for (resolveInfo in resInfoList) {
+                        val packageName = resolveInfo.activityInfo.packageName
+                        holder.itemView.context.grantUriPermission(packageName, fileProviderUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+
+                    // Start the activity with the Intent
+                    holder.itemView.context.startActivity(intent)
+                } else {
+                    Toast.makeText(holder.itemView.context, "No app available to open this document", Toast.LENGTH_SHORT).show()
+                }
             }.addOnFailureListener {
                 // Handle any errors that occur during file download
             }

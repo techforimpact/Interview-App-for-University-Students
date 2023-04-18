@@ -138,7 +138,7 @@ class SignIn : AppCompatActivity() {
                             })
                         } else {
                             progressDialog.dismiss()
-                            Toast.makeText(this, "Incorrect Email or Password", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Unable to sign in. (Network issue)", Toast.LENGTH_LONG).show()
                         }
                     })
 

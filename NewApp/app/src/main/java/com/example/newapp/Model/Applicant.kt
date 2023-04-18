@@ -3,10 +3,8 @@ package com.example.newapp.Model
 import android.os.Parcel
 import android.os.Parcelable
 
-class Applicant: Parcelable
-{
+class Applicant: Parcelable {
 
-    private var uid: String = ""
     private var studentUid: String = ""
     private var jobUid: String = ""
     private var name: String = ""
@@ -19,10 +17,10 @@ class Applicant: Parcelable
     private var resume: String = ""
     private var image: String = ""
     private var status: String = ""
+    private var approved: String = ""
 
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(uid)
         parcel.writeString(studentUid)
         parcel.writeString(jobUid)
         parcel.writeString(name)
@@ -35,29 +33,35 @@ class Applicant: Parcelable
         parcel.writeString(resume)
         parcel.writeString(image)
         parcel.writeString(status)
+        parcel.writeString(approved)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Student> {
-        override fun createFromParcel(parcel: Parcel): Student {
-            return Student(parcel)
+    companion object CREATOR : Parcelable.Creator<Applicant> {
+        override fun createFromParcel(parcel: Parcel): Applicant {
+            return Applicant(parcel)
         }
 
-        override fun newArray(size: Int): Array<Student?> {
+        override fun newArray(size: Int): Array<Applicant?> {
             return arrayOfNulls(size)
         }
     }
 
+    constructor(parcel: Parcel)
+    {
+
+    }
 
 
     constructor()
 
-    constructor(uid: String, name: String, email: String, university: String, program: String, degree: String, coverLetter: String, resume: String, image: String , status: String)
+    constructor(studentUid: String, jobUid: String, name: String, email: String, university: String, program: String, degree: String, coverLetter: String, resume: String, image: String , status: String , approved: String)
     {
-        this.uid = uid
+        this.studentUid = studentUid
+        this.jobUid = jobUid
         this.name = name
         this.email = email
         this.university = university
@@ -67,17 +71,10 @@ class Applicant: Parcelable
         this.resume = resume
         this.image = image
         this.status = status
+        this.approved = approved
     }
 
 
-    fun getUId() : String{
-        return uid
-    }
-
-    fun setUId(uid: String)
-    {
-        this.uid = uid
-    }
 
     fun getStudentUid(): String
     {
@@ -193,6 +190,16 @@ class Applicant: Parcelable
     fun setStatus(status: String)
     {
         this.status = status
+    }
+
+    fun getApproved(): String
+    {
+        return approved
+    }
+
+    fun setApproved(approved: String)
+    {
+        this.approved = approved
     }
 
 }

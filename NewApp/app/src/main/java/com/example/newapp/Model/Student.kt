@@ -15,6 +15,7 @@ class Student: Parcelable {
     private var rollno: String = ""
     private var image: String = ""
     private var approved: String = ""
+    private var role: String = ""
 
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -27,6 +28,7 @@ class Student: Parcelable {
         parcel.writeString(image)
         parcel.writeString(rollno)
         parcel.writeString(approved)
+        parcel.writeString(role)
     }
 
     override fun describeContents(): Int {
@@ -51,7 +53,7 @@ class Student: Parcelable {
 
     constructor()
 
-    constructor(uid: String, name: String, email: String, university: String, program: String, degree: String, image: String, approved: String)
+    constructor(uid: String, name: String, email: String, university: String, program: String, degree: String, image: String, approved: String, role: String)
     {
         this.uid = uid
         this.fullname = name
@@ -61,11 +63,24 @@ class Student: Parcelable {
         this.degree = degree
         this.image = image
         this.approved = approved
+        this.role = role
+    }
+
+
+    fun getRole(): String{
+        return role
+    }
+
+    fun setRole(role: String)
+    {
+        this.role = role
     }
 
     fun getUId() : String{
         return uid
     }
+
+
 
     fun setUId(uid: String)
     {

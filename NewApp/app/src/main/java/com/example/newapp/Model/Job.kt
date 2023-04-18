@@ -4,6 +4,7 @@ import android.icu.text.CaseMap.Title
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 
 class Job {
+    private var jobUid: String = ""
     private var title: String = ""
     private var category: String = ""
     private var courses: String = ""
@@ -17,8 +18,9 @@ class Job {
 
     constructor()
 
-    constructor(title: String, category: String, courses: String, seats: String, location: String, deadline: String, details: String,recruiterImage: String , recruiterName: String, uid: String )
+    constructor(jobUid: String ,title: String, category: String, courses: String, seats: String, location: String, deadline: String, details: String,recruiterImage: String , recruiterName: String, uid: String )
     {
+        this.jobUid = jobUid
         this.title = title
         this.category = category
         this.courses = courses
@@ -29,6 +31,15 @@ class Job {
         this.recruiterImage = recruiterImage
         this.recruiterName = recruiterName
         this.uid = uid
+    }
+
+    fun getJobUid() : String{
+        return jobUid
+    }
+
+    fun setJobUid(jobUid: String)
+    {
+        this.jobUid = jobUid
     }
 
     fun getTitle() : String{

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.newapp.Fragments_Student.HomeStudentFragment
+import com.example.newapp.Fragments_Student.NotificationsStudentFragment
 import com.example.newapp.Fragments_Student.ProfileStudentFragment
 import com.example.newapp.Fragments_Student.SearchStudentFragment
 import com.example.newapp.Model.Student
@@ -27,6 +28,10 @@ class StudFeed : AppCompatActivity() {
             }
             R.id.menu_student_search -> {
                 moveToFragment(SearchStudentFragment() , student)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.menu_student_notifications -> {
+                moveToFragment(NotificationsStudentFragment() , student)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.menu_personal_profile -> {

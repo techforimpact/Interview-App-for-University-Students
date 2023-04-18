@@ -3,18 +3,24 @@ package com.example.newapp.Fragments_Recruiter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.example.newapp.Model.Job
 import com.example.newapp.Model.Recruiter
 import com.example.newapp.Model.Student
 import com.example.newapp.R
 import com.example.newapp.StudentAccountSettingsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -33,7 +39,7 @@ class RecruiterProfileFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var profileId: String
+    private var profileId: String? = null
     private lateinit var firebaseUser: FirebaseUser
     private lateinit var editBtn: Button
     private lateinit var profileName: TextView
@@ -61,6 +67,14 @@ class RecruiterProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_recruiter_profile, container, false)
 
 
+        recruiter = arguments?.getParcelable<Recruiter>("recruiter")
+
+        val pref = context?.getSharedPreferences("RECPROF", Context.MODE_PRIVATE)
+        firebaseUser = FirebaseAuth.getInstance().currentUser!!
+
+
+
+
         editBtn = view.findViewById(R.id.recruiter_editprofile_btn)
         profileName = view.findViewById(R.id.recruiter_profile_name)
         profileLocation = view.findViewById(R.id.recruiter_location)
@@ -70,30 +84,52 @@ class RecruiterProfileFragment : Fragment() {
         profilePhone = view.findViewById(R.id.recruiter_profile_contact_number)
 
 
-        recruiter = arguments?.getParcelable<Recruiter>("recruiter")
 
 
-        profileName.text = recruiter!!.getName()
-        profileLocation.text = recruiter!!.getLocation()
-        Picasso.get().load(recruiter!!.getImage()).placeholder(R.drawable.profile_picture).into(profileImage)
-        profileBio.text = recruiter!!.getBio()
-        profileEmail.text = "Email: " + recruiter!!.getEmail()
-        profilePhone.text = "Contact Number: " + recruiter!!.getContact()
-
-
-        val pref = context?.getSharedPreferences("PREFS" , Context.MODE_PRIVATE)
-
-        firebaseUser = FirebaseAuth.getInstance().currentUser!!
         if (pref != null)
         {
-            this.profileId = pref.getString("profileId" , "none").toString()
+            this.profileId = pref.getString("profileId" , "")
         }
 
-        if (profileId == firebaseUser.uid)
+        if (profileId != firebaseUser.uid)
         {
             editBtn.visibility = View.GONE
+
+
+            val query = FirebaseDatabase.getInstance().getReference("Profiles")
+
+            query.orderByChild("uid").equalTo(profileId).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (snap in snapshot.children){
+                        recruiter = snap.getValue(Recruiter::class.java)
+                        if(recruiter != null){
+                            break
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Error reading data: ${error.message}")
+                }
+            })
+
+
         }
 
+
+
+
+
+
+
+
+
+        profileName.text = recruiter?.getName()
+        profileLocation.text = recruiter?.getLocation()
+        Picasso.get().load(recruiter?.getImage()).placeholder(R.drawable.profile_picture).into(profileImage)
+        profileBio.text = recruiter?.getBio()
+        profileEmail.text = "Email: " + recruiter?.getEmail()
+        profilePhone.text = "Contact Number: " + recruiter?.getContact()
 
 
 
@@ -109,6 +145,46 @@ class RecruiterProfileFragment : Fragment() {
 
         return view
     }
+
+/*    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val pref = context?.getSharedPreferences("RECPROF", Context.MODE_PRIVATE)
+        firebaseUser = FirebaseAuth.getInstance().currentUser!!
+
+        if (pref != null)
+        {
+            this.profileId = pref.getString("profileId" , "").toString()
+        }
+
+        if (profileId != firebaseUser.uid)
+        {
+            editBtn.visibility = View.GONE
+
+            val profileRef = FirebaseDatabase.getInstance().getReference("Profiles").child(profileId)
+
+            profileRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        recruiter = snapshot.getValue(Recruiter::class.java)
+                        // Do something with the retrieved Recruiter object
+                    } else {
+                        // Profile data not found
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+
+        }
+
+
+
+    }*/
+
+
 
     companion object {
         /**

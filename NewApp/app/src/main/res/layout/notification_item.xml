@@ -2,15 +2,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="7dp"
     android:layout_margin="10dp"
     android:background="@drawable/recruiter_view"
     >
 
     <LinearLayout
+        android:id="@+id/recruiter_job_top_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/student_noti_recruiter_image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/profile_picture"/>
+
+        <TextView
+            android:id="@+id/student_noti_recruiter_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="RecruiterName"
+            android:textColor="@color/black"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/recruiter_job_top_view"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
 
@@ -34,37 +65,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Job Title: "
+                    android:textSize="20dp"
                     android:textStyle="bold"/>
 
 
-                <TextView
-                    android:id="@+id/student_notification_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Title"
-                    android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/student_noti_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Content"
-                    android:textSize="12dp"
+                    android:text="Status : "
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"
                     android:layout_below="@+id/student_notification_title"
                     />
 
 
             </LinearLayout>
-
-            <Button
-                android:id="@+id/student_notifiation_view_j0b_btn"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:text="View Job"
-                android:padding="0dp"
-                android:textSize="10dp"/>
 
 
 

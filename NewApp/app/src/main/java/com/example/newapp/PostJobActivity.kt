@@ -142,6 +142,7 @@ class PostJobActivity : AppCompatActivity() {
 
         val usermap = HashMap<String , Any>()
 
+        usermap["jobUid"] = newJobRef.key.toString()
         usermap["uid"] = currentUserID
         usermap["recruiterImage"] = job.recruiterImage
         usermap["recruiterName"] = job.recruiterName
@@ -167,7 +168,6 @@ class PostJobActivity : AppCompatActivity() {
                     // Error occurred while saving data
                     val message = task.exception!!.toString()
                     Toast.makeText(this , "Error saving post data: ${message}" , Toast.LENGTH_SHORT).show()
-                    FirebaseAuth.getInstance().signOut()
                     progress.dismiss()
                 }
             }

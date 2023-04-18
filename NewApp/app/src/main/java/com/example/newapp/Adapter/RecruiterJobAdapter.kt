@@ -38,8 +38,7 @@ class RecruiterJobAdapter(private var mContext: Context,
 
         holder.seeApplications.setOnClickListener(View.OnClickListener {
             val pref = mContext.getSharedPreferences("PREFS" , Context.MODE_PRIVATE).edit()
-            pref.putString("jobId" , job.getUid())
-            pref.putString("uid" , FirebaseAuth.getInstance().uid)
+            pref.putString("jobUId" , job.getJobUid())
             pref.apply()
 
             (mContext as FragmentActivity).supportFragmentManager.beginTransaction()

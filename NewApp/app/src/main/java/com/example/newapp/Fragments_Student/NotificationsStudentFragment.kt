@@ -1,6 +1,6 @@
-package com.example.newapp.Fragments_Recruiter
+package com.example.newapp.Fragments_Student
 
-import android.content.Context
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,15 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newapp.Adapter.ApplicantAdapter
-import com.example.newapp.Adapter.RecruiterJobAdapter
-import com.example.newapp.Model.Applicant
+import com.example.newapp.Adapter.JobAdapter
+import com.example.newapp.Adapter.NotificationAdapter
+import com.example.newapp.Model.Job
+import com.example.newapp.Model.Notification
 import com.example.newapp.Model.Student
 import com.example.newapp.R
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,17 +29,20 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [RecruiterApplicationsFragment.newInstance] factory method to
+ * Use the [NotificationsStudentFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RecruiterApplicationsFragment : Fragment() {
+class NotificationsStudentFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var applicantAdapter: ApplicantAdapter
-    private lateinit var mApplicants: MutableList<Applicant>
+
+
+    private var recyclerView: RecyclerView? = null
+    private var notificationAdapter: NotificationAdapter? = null
+    private var mNotification: MutableList<Notification>? = null
+    private var student: Student? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,48 +57,49 @@ class RecruiterApplicationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_recruiter_applications, container, false)
+        val view = inflater.inflate(R.layout.fragment_notification_student, container, false)
 
-        recyclerView = view.findViewById(R.id.recycler_view_student_applications)
+        student = arguments?.getParcelable<Student>("student")
+
+        mNotification = ArrayList()
+
+        recyclerView = view.findViewById(R.id.recycler_view_notification_student)
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = LinearLayoutManager(context)
 
-        mApplicants = ArrayList()
+        notificationAdapter = NotificationAdapter(requireContext() , mNotification as ArrayList<Notification> , true)
 
-        applicantAdapter = ApplicantAdapter(requireContext() , mApplicants as ArrayList , true)
-        recyclerView.adapter = applicantAdapter
+        recyclerView?.adapter = notificationAdapter
 
-        val pref = context?.getSharedPreferences("PREFS" , Context.MODE_PRIVATE)
+        var img: CircleImageView = view.findViewById(R.id.profile_picture)
 
-        val jobUid = pref?.getString("jobUId", "")
+        Picasso.get().load(student!!.getImage()).placeholder(R.drawable.profile_picture).into(img)
 
-        retrieveApplicants(jobUid.toString())
+
+        retrieveNotifications()
 
 
         return view
     }
 
 
-    private fun retrieveApplicants(jobuid: String)
+    private fun retrieveNotifications()
     {
-        val query = FirebaseDatabase.getInstance().getReference("Applicants")
-            .child(jobuid)
+        val notifRef = FirebaseDatabase.getInstance().getReference("Notifications")
+            .orderByChild("studentUid")
+            .equalTo(FirebaseAuth.getInstance().uid.toString())
 
-
-        query.addValueEventListener(object: ValueEventListener {
+        notifRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                mApplicants?.clear()
 
-                for (snap in snapshot.children) {
-                    val applicant = snap.getValue(Applicant::class.java)
-
-                    // Check if student matches search query
-                    if (applicant != null  && applicant.getStatus() == "pending") {
-                        mApplicants?.add(applicant)
+                mNotification?.clear()
+                for (notification in snapshot.children) {
+                    val noti = notification.getValue(Notification::class.java)
+                    if(noti != null){
+                        mNotification?.add(noti)
                     }
                 }
-
-                applicantAdapter?.notifyDataSetChanged()
+                notificationAdapter?.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -100,9 +108,6 @@ class RecruiterApplicationsFragment : Fragment() {
         })
     }
 
-
-
-
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -110,12 +115,12 @@ class RecruiterApplicationsFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment RecruiterApplicationsFragment.
+         * @return A new instance of fragment NotificationStudentFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            RecruiterApplicationsFragment().apply {
+            NotificationsStudentFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

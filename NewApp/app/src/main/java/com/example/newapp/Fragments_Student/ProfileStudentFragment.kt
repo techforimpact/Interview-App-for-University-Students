@@ -1,7 +1,9 @@
 package com.example.newapp.Fragments_Student
 
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,8 +12,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newapp.Adapter.CertificatesAdapter
 import com.example.newapp.Adapter.JobAdapter
 import com.example.newapp.Adapter.SkillsAdapter
+import com.example.newapp.Model.Certificate
 import com.example.newapp.Model.Job
 import com.example.newapp.Model.Student
 import com.example.newapp.R
@@ -22,6 +26,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -45,6 +50,9 @@ class ProfileStudentFragment : Fragment() {
     private var profileUniversity: TextView? = null
     private lateinit var skillsRecyclerView: RecyclerView
 
+    private lateinit var certificatesRecyclerView: RecyclerView
+    private lateinit var certificatesAdapter: CertificatesAdapter
+
     private var skillsAdapter: SkillsAdapter? = null
     private var mSkills: MutableList<String>? = null
 
@@ -53,6 +61,10 @@ class ProfileStudentFragment : Fragment() {
     private lateinit var newCertificate: Button
 
     private lateinit var selectedSkill: String
+
+    private var selectedFileUri: Uri? = null
+
+    private val PICK_FILE_REQUEST_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,30 +168,49 @@ class ProfileStudentFragment : Fragment() {
             }
         }
 
-        newCertificate.setOnClickListener{
-            // Create a dialog to add a new skill
+        newCertificate.setOnClickListener {
+            // Create a dialog to add a new certificate
             val dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_add_skill)
+            dialog.setContentView(R.layout.dialog_add_certificate)
 
             // Set up the dialog layout
-            val skillEditText = dialog.findViewById<EditText>(R.id.skill_edit_text)
-            val addButton = dialog.findViewById<Button>(R.id.add_skill_button)
+            val certificateNameEditText = dialog.findViewById<EditText>(R.id.file_name_box)
+            val selectFileButton = dialog.findViewById<Button>(R.id.select_button)
+            val uploadButton = dialog.findViewById<Button>(R.id.upload_button)
             val cancelButton = dialog.findViewById<Button>(R.id.cancel_button)
 
-            addButton.text = "Add Certificate"
+            selectFileButton.setOnClickListener {
+                // Create an intent to select a file
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "*/*"
+                val mimeTypes = arrayOf("application/pdf", "image/png")
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                startActivityForResult(intent, PICK_FILE_REQUEST_CODE)
+
+                uploadButton.isEnabled = true
+            }
 
             dialog.show()
-            // Set up the Add button
-            addButton.setOnClickListener {
-                // Get the skill text and add it to the database
-                val skill = skillEditText.text.toString().trim()
-                if (skill.isNotEmpty()) {
-                    val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                    val skillsRef = FirebaseDatabase.getInstance().getReference("Skills").child(uid).push()
-                    skillsRef.setValue(skill)
-                    dialog.dismiss()
+
+            // Set up the Upload button
+            uploadButton.setOnClickListener {
+                // Get the certificate name and file URI and upload to Firebase storage
+                val certificateName = certificateNameEditText.text.toString().trim()
+                if (certificateName.isNotEmpty()) {
+                    if (selectedFileUri != null) {
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                        val storageRef = FirebaseStorage.getInstance().getReference("certificates").child(uid).child("$certificateName.pdf")
+                        storageRef.putFile(selectedFileUri!!).addOnSuccessListener {
+                            Toast.makeText(requireContext(), "Certificate uploaded successfully", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                        }.addOnFailureListener {
+                            Toast.makeText(requireContext(), "Failed to upload certificate", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Please select a file", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    skillEditText.error = "Please enter a skill"
+                    certificateNameEditText.error = "Please enter a certificate name"
                 }
             }
 
@@ -190,10 +221,52 @@ class ProfileStudentFragment : Fragment() {
         }
 
 
+        certificatesRecyclerView = view.findViewById(R.id.certificates_recycler_view)
+        certificatesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+
+        retrieveCertificates(uid)
 
         return view
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            data?.data?.let {
+                selectedFileUri = it
+            }
+        }
+    }
+
+
+    private fun retrieveCertificates(uid: String) {
+        // Retrieve the certificates from Firebase Storage
+        val storageRef = FirebaseStorage.getInstance().getReference("certificates").child(uid)
+        storageRef.listAll()
+            .addOnSuccessListener { listResult ->
+                val certificates = listResult.items.map {
+                    Certificate(it.name, it.downloadUrl.toString())
+                }
+                certificatesAdapter = CertificatesAdapter(certificates) { certificate ->
+                    // Open the file when the user clicks on the certificate name
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(certificate.getDownloadUrl())
+                    if (intent.resolveActivity(requireActivity().packageManager) != null) {
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(requireContext(), "No app found to open the file", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                certificatesRecyclerView.adapter = certificatesAdapter
+            }
+            .addOnFailureListener {
+                // Handle any errors that occur while retrieving the certificates
+            }
+    }
+
 
     companion object {
         /**

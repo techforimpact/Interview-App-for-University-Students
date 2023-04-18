@@ -43,8 +43,8 @@ class JobAdapter (private var mContext: Context,
 
         holder.applybtn.setOnClickListener{
             val intent = Intent(mContext, JobApplication::class.java).apply {
-                putExtra("jobUid", mJobs[position].getUid())
-                putExtra("uid" , FirebaseAuth.getInstance().uid)
+                putExtra("jobUid", job.getJobUid())
+                putExtra("uid" , job.getUid())
             }
             mContext.startActivity(intent)
         }
